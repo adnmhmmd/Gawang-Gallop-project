@@ -1,0 +1,26 @@
+fileFormatVersion: 2
+guid: cddb043f113ba43819ce37eef8f8b23c
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - FOT-NewRodin ProN
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 53da190c7f20440c086ba61440cf6fde, type: 3}
+  - {fileID: 12800000, guid: 791b4bfa9c7ca41fc92aa1ccbdd4e9c9, type: 3}
+  - {fileID: 12800000, guid: 74d027c0811b846289673344238b0a4f, type: 3}
+  - {fileID: 12800000, guid: fb7e0b3bd160141c094d3005fe2f2c76, type: 3}
+  - {fileID: 12800000, guid: d63d17ae7b0484c99b231e3c90fe48fb, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
