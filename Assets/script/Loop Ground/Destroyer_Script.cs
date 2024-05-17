@@ -4,24 +4,20 @@ using UnityEngine;
 
 public class Destroyer_Script : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public float distanceThreshold = 1000f; // Jarak setelah objek dihancurkan
+    private Transform player;
+
     void Start()
     {
-        
+        // Mengasumsikan bahwa objek pemain memiliki tag "Player"
+        player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
-    }
-
-
-    private void OmCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.tag == "Ground")
+        if (Vector3.Distance(transform.position, player.position) > distanceThreshold)
         {
-            Destroy(collision.gameObject);
+            Destroy(gameObject);
         }
     }
 }

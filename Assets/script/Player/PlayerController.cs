@@ -30,15 +30,15 @@ public class PlayerController : MonoBehaviour
         transform.position = new Vector3(transform.position.x + for_speed * Time.deltaTime, transform.position.y, transform.position.z);
         if (current_pos == 0)
         {
-            transform.position = new Vector3(transform.position.x, transform.position.y, -45f);
+            transform.position = new Vector3(transform.position.x, transform.position.y, -46.55f);
         }
         else if (current_pos == 1)
         {
-            transform.position = new Vector3(transform.position.x, transform.position.y, -35f);
+            transform.position = new Vector3(transform.position.x, transform.position.y, -37f);
         }
         else if (current_pos == 2)
         {
-            transform.position = new Vector3(transform.position.x, transform.position.y, -55f);
+            transform.position = new Vector3(transform.position.x, transform.position.y, -57f);
         }
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviour
 
     public void BeginGame()
     {
-        Invoke("StartMovement", 4f); // Panggil fungsi StartMovement setelah penundaan 4 detik
+        Invoke("StartMovement", 3f); // Panggil fungsi StartMovement setelah penundaan 4 detik
     }
 
 
