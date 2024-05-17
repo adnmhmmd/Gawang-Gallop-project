@@ -12,7 +12,7 @@ public class groundspawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -27,8 +27,9 @@ public class groundspawner : MonoBehaviour
 
     public void Spawn_Ground()
     {
-        Instantiate(Tribun, spawn_pos.position, Quaternion.identity);
+        // Instantiate objek dengan rotasi yang sama seperti empty object yang memiliki script ini
+        Instantiate(Tribun, spawn_pos.position, spawn_pos.rotation);
         spawn_pos.position = new Vector3(spawn_pos.position.x + 574f, spawn_pos.position.y, spawn_pos.position.z);
     }
-    
+
 }

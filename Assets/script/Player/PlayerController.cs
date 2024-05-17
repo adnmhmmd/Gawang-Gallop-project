@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
         transform.position = new Vector3(transform.position.x + for_speed * Time.deltaTime, transform.position.y, transform.position.z);
         if (current_pos == 0)
         {
-            transform.position = new Vector3(transform.position.x, transform.position.y, -46.55f);
+            transform.position = new Vector3(transform.position.x, transform.position.y, -47.2f);
         }
         else if (current_pos == 1)
         {
@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour
         enabled = true; // Mengaktifkan pembaruan skrip untuk memulai pergerakan pemain
 
         // Atur kecepatan pergerakan pemain sesuai yang telah ditentukan
-        for_speed = 20.0f; // Misalnya, di sini kita atur kecepatan pemain menjadi 5 unit per detik
+        for_speed = 40.0f; // Misalnya, di sini kita atur kecepatan pemain menjadi 5 unit per detik
     }
 
     public void BeginGame()
