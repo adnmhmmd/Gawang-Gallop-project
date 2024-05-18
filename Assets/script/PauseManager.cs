@@ -10,6 +10,7 @@ public class PauseManager : MonoBehaviour
     public Button resumeButton; // Tambahkan reference untuk tombol resume
     private bool isPaused = false;
 
+
     private void Start()
     {
         pauseMenu.SetActive(false);
