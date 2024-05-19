@@ -28,9 +28,6 @@ public class PlayerController : MonoBehaviour
         // Pastikan Rigidbody memiliki pengaturan yang benar
         rb.useGravity = true;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
-
-        // Pastikan Animator menggunakan Root Motion
-        animator.applyRootMotion = true;
     }
 
     void Awake()
@@ -42,6 +39,23 @@ public class PlayerController : MonoBehaviour
     {
         if (isCollided)
             return; // Jangan update jika pemain telah bertabrakan
+
+        // Update posisi ke depan
+        transform.position += new Vector3(for_speed * Time.deltaTime, 0, 0);
+
+        // Update posisi samping berdasarkan current_pos
+        if (current_pos == 0)
+        {
+            transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, center_pos.position.y, center_pos.position.z), side_speed * Time.deltaTime);
+        }
+        else if (current_pos == 1)
+        {
+            transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, left_pos.position.y, left_pos.position.z), side_speed * Time.deltaTime);
+        }
+        else if (current_pos == 2)
+        {
+            transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, right_pos.position.y, right_pos.position.z), side_speed * Time.deltaTime);
+        }
 
         // Input untuk mengubah current_pos
         if (Input.GetKeyDown(KeyCode.LeftArrow))
@@ -75,31 +89,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
-    {
-        if (isCollided)
-            return; // Jangan update jika pemain telah bertabrakan
-
-        // Update posisi ke depan
-        rb.MovePosition(rb.position + Vector3.right * for_speed * Time.fixedDeltaTime);
-
-        // Update posisi samping berdasarkan current_pos
-        Vector3 targetPosition = rb.position;
-        if (current_pos == 0)
-        {
-            targetPosition = new Vector3(rb.position.x, center_pos.position.y, center_pos.position.z);
-        }
-        else if (current_pos == 1)
-        {
-            targetPosition = new Vector3(rb.position.x, left_pos.position.y, left_pos.position.z);
-        }
-        else if (current_pos == 2)
-        {
-            targetPosition = new Vector3(rb.position.x, right_pos.position.y, right_pos.position.z);
-        }
-        rb.MovePosition(Vector3.Lerp(rb.position, targetPosition, side_speed * Time.fixedDeltaTime));
-    }
-
     void Jump()
     {
         rb.AddForce(Vector3.up * jump_force, ForceMode.Impulse);
@@ -122,13 +111,14 @@ public class PlayerController : MonoBehaviour
     }
 
     void HandleCollisionWithObstacle()
-    {
-        isCollided = true; // Set status tabrakan
-        animator.SetTrigger("Fall"); // Mainkan animasi jatuh
-        for_speed = 0; // Hentikan pergerakan maju dengan mengatur for_speed ke 0
-        rb.velocity = Vector3.zero; // Hentikan semua gerakan
-        rb.isKinematic = true; // Matikan fisika sementara
-    }
+{
+    isCollided = true; // Set status tabrakan
+    animator.SetTrigger("Fall"); // Mainkan animasi jatuh
+    for_speed = 0; // Hentikan pergerakan maju dengan mengatur for_speed ke 0
+    rb.velocity = Vector3.zero; // Hentikan semua gerakan
+    rb.isKinematic = true; // Matikan fisika sementara
+}
+
 
     IEnumerator EndGameAfterDelay(float delay)
     {
@@ -154,15 +144,5 @@ public class PlayerController : MonoBehaviour
     public void BeginGame()
     {
         Invoke("StartMovement", 3f); // Panggil fungsi StartMovement setelah penundaan 3 detik
-    }
-
-    void OnAnimatorMove()
-    {
-        // Pastikan bahwa animator menggunakan root motion
-        if (animator)
-        {
-            Vector3 newPosition = rb.position + animator.deltaPosition;
-            rb.MovePosition(newPosition);
-        }
     }
 }
