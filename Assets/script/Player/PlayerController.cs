@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Input untuk lompat
-        if (Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             Jump();
         }
@@ -111,14 +111,13 @@ public class PlayerController : MonoBehaviour
     }
 
     void HandleCollisionWithObstacle()
-{
-    isCollided = true; // Set status tabrakan
-    animator.SetTrigger("Fall"); // Mainkan animasi jatuh
-    for_speed = 0; // Hentikan pergerakan maju dengan mengatur for_speed ke 0
-    rb.velocity = Vector3.zero; // Hentikan semua gerakan
-    rb.isKinematic = true; // Matikan fisika sementara
-}
-
+    {
+        isCollided = true; // Set status tabrakan
+        animator.SetTrigger("Fall"); // Mainkan animasi jatuh
+        for_speed = 0; // Hentikan pergerakan maju dengan mengatur for_speed ke 0
+        rb.velocity = Vector3.zero; // Hentikan semua gerakan
+        rb.isKinematic = true; // Matikan fisika sementara
+    }
 
     IEnumerator EndGameAfterDelay(float delay)
     {
