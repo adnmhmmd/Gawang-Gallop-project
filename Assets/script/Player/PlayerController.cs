@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded; // Variabel untuk memeriksa apakah pemain di tanah
     private Animator animator; // Referensi ke Animator
     private bool isCollided = false; // Menandakan jika pemain telah bertabrakan dengan obstacle
+    public GameObject gameover;
 
     void Start()
     {
@@ -98,9 +99,10 @@ public class PlayerController : MonoBehaviour
 
     // Mengatur isGrounded ketika karakter menyentuh tanah
     void OnCollisionEnter(Collision collision)
-    {
+    { 
         if (collision.gameObject.CompareTag("Ground"))
         {
+            Debug.Log("Player is grounded!");
             isGrounded = true; // Pemain di tanah jika bertabrakan dengan objek ber-tag "Ground"
             animator.SetBool("isJumping", false); // Reset parameter isJumping di Animator
         }
@@ -110,13 +112,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void HandleCollisionWithObstacle()
+void HandleCollisionWithObstacle()
     {
         isCollided = true; // Set status tabrakan
         animator.SetTrigger("Fall"); // Mainkan animasi jatuh
         for_speed = 0; // Hentikan pergerakan maju dengan mengatur for_speed ke 0
         rb.velocity = Vector3.zero; // Hentikan semua gerakan
         rb.isKinematic = true; // Matikan fisika sementara
+        
+        // Panggil fungsi untuk menampilkan panel game over setelah penundaan
+        Invoke("ShowGameOverPanel", 3f);
+    }
+
+    void ShowGameOverPanel()
+    {
+        // Tampilkan panel game over
+        if (gameover != null)
+        {
+            gameover.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError("Game Over Panel belum ditetapkan!");
+        }
     }
 
     IEnumerator EndGameAfterDelay(float delay)
