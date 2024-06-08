@@ -1,50 +1,62 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     public float for_speed = 5f;
     public float side_speed = 5f;
-    public float jump_force = 5f; // Gaya lompat
+    public float jump_force = 5f;
     public Transform center_pos;
     public Transform left_pos;
     public Transform right_pos;
     private int current_pos;
     public Rigidbody rb;
-    private bool isGrounded; // Variabel untuk memeriksa apakah pemain di tanah
-    private Animator animator; // Referensi ke Animator
-    private bool isCollided = false; // Menandakan jika pemain telah bertabrakan dengan obstacle
+    private bool isGrounded;
+    private Animator animator;
+    private bool isCollided = false;
     public GameObject gameover;
+    public Text coinText;
+
+    private Vector2 startTouchPosition, endTouchPosition;
+
+    private int currentSessionCoinCount;
+    private int totalCoinCount;
+
+    public AudioClip coinSound; // Tambahkan AudioClip untuk koin
+    private AudioSource audioSource; // Tambahkan AudioSource untuk memutar suara
 
     void Start()
     {
-        // current 0 = center, 1 = left, 2 = right
         current_pos = 0;
         Physics.IgnoreLayerCollision(3, 6);
-        isGrounded = true; // Pemain di tanah saat memulai
-        animator = GetComponent<Animator>(); // Inisialisasi referensi ke Animator
-        rb = GetComponent<Rigidbody>(); // Inisialisasi referensi ke Rigidbody
+        isGrounded = true;
+        animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
 
-        // Pastikan Rigidbody memiliki pengaturan yang benar
         rb.useGravity = true;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
+
+        currentSessionCoinCount = 0;
+        LoadTotalCoins();
+        UpdateCoinUI();
+
+        audioSource = GetComponent<AudioSource>(); // Inisialisasi AudioSource
     }
 
     void Awake()
     {
-        enabled = false; // Matikan script saat game dimulai
+        enabled = false;
     }
 
     void Update()
     {
         if (isCollided)
-            return; // Jangan update jika pemain telah bertabrakan
+            return;
 
-        // Update posisi ke depan
         transform.position += new Vector3(for_speed * Time.deltaTime, 0, 0);
 
-        // Update posisi samping berdasarkan current_pos
         if (current_pos == 0)
         {
             transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, center_pos.position.y, center_pos.position.z), side_speed * Time.deltaTime);
@@ -58,75 +70,122 @@ public class PlayerController : MonoBehaviour
             transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, right_pos.position.y, right_pos.position.z), side_speed * Time.deltaTime);
         }
 
-        // Input untuk mengubah current_pos
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+            if (touch.phase == TouchPhase.Began)
+            {
+                startTouchPosition = touch.position;
+            }
+
+            if (touch.phase == TouchPhase.Ended)
+            {
+                endTouchPosition = touch.position;
+                Swipe();
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            if (current_pos == 0)
-            {
-                current_pos = 1;
-            }
-            else if (current_pos == 2)
-            {
-                current_pos = 0;
-            }
+            MoveLeft();
         }
-
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            if (current_pos == 0)
-            {
-                current_pos = 2;
-            }
-            else if (current_pos == 1)
-            {
-                current_pos = 0;
-            }
+            MoveRight();
         }
-
-        // Input untuk lompat
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        else if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             Jump();
+        }
+    }
+
+    void Swipe()
+    {
+        Vector2 swipeDelta = endTouchPosition - startTouchPosition;
+
+        if (Mathf.Abs(swipeDelta.x) > Mathf.Abs(swipeDelta.y))
+        {
+            if (swipeDelta.x > 0)
+            {
+                MoveRight();
+            }
+            else
+            {
+                MoveLeft();
+            }
+        }
+        else
+        {
+            if (swipeDelta.y > 0 && isGrounded)
+            {
+                Jump();
+            }
+        }
+    }
+
+    void MoveLeft()
+    {
+        if (current_pos == 0)
+        {
+            current_pos = 1;
+        }
+        else if (current_pos == 2)
+        {
+            current_pos = 0;
+        }
+    }
+
+    void MoveRight()
+    {
+        if (current_pos == 0)
+        {
+            current_pos = 2;
+        }
+        else if (current_pos == 1)
+        {
+            current_pos = 0;
         }
     }
 
     void Jump()
     {
         rb.AddForce(Vector3.up * jump_force, ForceMode.Impulse);
-        isGrounded = false; // Pemain tidak di tanah setelah melompat
-        animator.SetBool("isJumping", true); // Set parameter isJumping di Animator
+        isGrounded = false;
+        animator.SetBool("isJumping", true);
     }
 
-    // Mengatur isGrounded ketika karakter menyentuh tanah
     void OnCollisionEnter(Collision collision)
-    { 
+    {
         if (collision.gameObject.CompareTag("Ground"))
         {
             Debug.Log("Player is grounded!");
-            isGrounded = true; // Pemain di tanah jika bertabrakan dengan objek ber-tag "Ground"
-            animator.SetBool("isJumping", false); // Reset parameter isJumping di Animator
+            isGrounded = true;
+            animator.SetBool("isJumping", false);
         }
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
-            HandleCollisionWithObstacle(); // Panggil fungsi penanganan tabrakan
+            HandleCollisionWithObstacle();
+        }
+        else if (collision.gameObject.CompareTag("Coin"))
+        {
+            CollectCoin(collision.gameObject);
         }
     }
 
-void HandleCollisionWithObstacle()
+    void HandleCollisionWithObstacle()
     {
-        isCollided = true; // Set status tabrakan
-        animator.SetTrigger("Fall"); // Mainkan animasi jatuh
-        for_speed = 0; // Hentikan pergerakan maju dengan mengatur for_speed ke 0
-        rb.velocity = Vector3.zero; // Hentikan semua gerakan
-        rb.isKinematic = true; // Matikan fisika sementara
-        
-        // Panggil fungsi untuk menampilkan panel game over setelah penundaan
+        isCollided = true;
+        animator.SetTrigger("Fall");
+        for_speed = 0;
+        rb.velocity = Vector3.zero;
+        rb.isKinematic = true;
+
         Invoke("ShowGameOverPanel", 3f);
     }
 
     void ShowGameOverPanel()
     {
-        // Tampilkan panel game over
         if (gameover != null)
         {
             gameover.SetActive(true);
@@ -139,27 +198,61 @@ void HandleCollisionWithObstacle()
 
     IEnumerator EndGameAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(delay); // Tunggu selama delay yang ditentukan
-        EndGame(); // Panggil fungsi untuk mengakhiri permainan
+        yield return new WaitForSeconds(delay);
+        EndGame();
     }
 
     void EndGame()
     {
-        // Lakukan apa pun yang diperlukan untuk mengakhiri permainan di sini
-        Debug.Log("Game Over!"); // Contoh: Cetak pesan "Game Over!" ke konsol
-        // Tambahan: Mungkin Anda ingin memuat ulang level atau menampilkan layar game over
+        Debug.Log("Game Over!");
     }
 
     public void StartMovement()
     {
-        enabled = true; // Mengaktifkan pembaruan skrip untuk memulai pergerakan pemain
-
-        // Atur kecepatan pergerakan pemain sesuai yang telah ditentukan
-        for_speed = 40.0f; // Misalnya, di sini kita atur kecepatan pemain menjadi 5 unit per detik
+        enabled = true;
+        for_speed = 40.0f;
     }
 
     public void BeginGame()
     {
-        Invoke("StartMovement", 3f); // Panggil fungsi StartMovement setelah penundaan 3 detik
+        Invoke("StartMovement", 3f);
+    }
+
+    void CollectCoin(GameObject coin)
+    {
+        currentSessionCoinCount++;
+        totalCoinCount++;
+        SaveTotalCoins();
+        Destroy(coin);
+        UpdateCoinUI();
+        Debug.Log("Coin collected! Total coins: " + totalCoinCount);
+
+        // Memutar audio saat terkena koin
+        if (coinSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(coinSound);
+        }
+    }
+
+    void SaveTotalCoins()
+    {
+        PlayerPrefs.SetInt("TotalCoinCount", totalCoinCount);
+    }
+
+    void LoadTotalCoins()
+    {
+        totalCoinCount = PlayerPrefs.GetInt("TotalCoinCount", 0);
+    }
+
+    void UpdateCoinUI()
+    {
+        if (coinText != null)
+        {
+            coinText.text = currentSessionCoinCount.ToString();
+        }
+        else
+        {
+            Debug.LogError("Coin Text UI belum ditetapkan!");
+        }
     }
 }
