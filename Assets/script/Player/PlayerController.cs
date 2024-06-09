@@ -24,8 +24,13 @@ public class PlayerController : MonoBehaviour
     private int currentSessionCoinCount;
     private int totalCoinCount;
 
-    public AudioClip coinSound; // Tambahkan AudioClip untuk koin
-    private AudioSource audioSource; // Tambahkan AudioSource untuk memutar suara
+
+    public AudioClip FallSound; // AudioClip untuk koin
+    public AudioClip coinSound; // AudioClip untuk koin
+    public AudioClip runSound; // AudioClip untuk suara lari
+    public AudioClip jumpSound; // AudioClip untuk suara lompat
+    public AudioClip landingSound; // AudioClip untuk suara landing
+    private AudioSource audioSource; // AudioSource untuk memutar suara
 
     void Start()
     {
@@ -43,6 +48,10 @@ public class PlayerController : MonoBehaviour
         UpdateCoinUI();
 
         audioSource = GetComponent<AudioSource>(); // Inisialisasi AudioSource
+        if (audioSource == null)
+        {
+            Debug.LogError("AudioSource tidak ditemukan pada GameObject");
+        }
     }
 
     void Awake()
@@ -153,6 +162,15 @@ public class PlayerController : MonoBehaviour
         rb.AddForce(Vector3.up * jump_force, ForceMode.Impulse);
         isGrounded = false;
         animator.SetBool("isJumping", true);
+
+        // Hentikan suara lari saat melompat
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+
+        // Memutar suara lompat
+        PlayJumpSound();
     }
 
     void OnCollisionEnter(Collision collision)
@@ -162,6 +180,9 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Player is grounded!");
             isGrounded = true;
             animator.SetBool("isJumping", false);
+
+            // Memutar suara landing
+            PlayLandingSound();
         }
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
@@ -180,6 +201,13 @@ public class PlayerController : MonoBehaviour
         for_speed = 0;
         rb.velocity = Vector3.zero;
         rb.isKinematic = true;
+
+        // Hentikan suara lari saat terjadi tabrakan
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+        PlayFallSound();
 
         Invoke("ShowGameOverPanel", 3f);
     }
@@ -255,4 +283,67 @@ public class PlayerController : MonoBehaviour
             Debug.LogError("Coin Text UI belum ditetapkan!");
         }
     }
+
+    public void PlayJumpSound()
+    {
+        if (audioSource != null && jumpSound != null)
+        {
+            audioSource.PlayOneShot(jumpSound);
+        }
+        else
+        {
+            if (audioSource == null)
+                Debug.LogError("AudioSource tidak ada");
+            if (jumpSound == null)
+                Debug.LogError("jumpSound tidak ada");
+        }
+    }
+
+    public void PlayLandingSound()
+    {
+        if (audioSource != null && landingSound != null)
+        {
+            audioSource.PlayOneShot(landingSound);
+        }
+        else
+        {
+            if (audioSource == null)
+                Debug.LogError("AudioSource tidak ada");
+            if (landingSound == null)
+                Debug.LogError("landingSound tidak ada");
+        }
+    }
+
+
+    public void PlayRunSound()
+    {
+        if (audioSource != null && runSound != null)
+        {
+            audioSource.PlayOneShot(runSound);
+        }
+        else
+        {
+            // if (audioSource == null)
+            //     Debug.LogError("AudioSource tidak ada");
+            if (runSound == null)
+                Debug.LogError("runSound tidak ada");
+        }
+    }
+
+    public void PlayFallSound()
+    {
+        if (FallSound != null)
+        {
+            audioSource.PlayOneShot(FallSound);
+        }
+        else
+        {
+            // if (audioSource == null)
+            //     Debug.LogError("AudioSource tidak ada");
+            if (FallSound == null)
+                Debug.LogError("playerFallSound tidak ada");
+        }
+    }
+
+
 }
