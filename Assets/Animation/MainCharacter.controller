@@ -72,7 +72,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 60a2f11016db7c849a8f7f1e0d33d663, type: 2}
+  m_Motion: {fileID: 7400000, guid: 6cd4fa02623ed48f68f9a48c175dc8a5, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -100,7 +100,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 17155fb2ab05cfa41b96fde951f8aa42, type: 2}
+  m_Motion: {fileID: 7400000, guid: d4a0508e6a6694a4eaf0953901d23447, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -120,9 +120,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 1.2270448
+  m_TransitionDuration: 0.26498628
   m_TransitionOffset: 0
-  m_ExitTime: 0.7087545
+  m_ExitTime: 0.6929534
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -241,7 +241,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 4e67ed3f282320248ac6c0e7295eabc4, type: 2}
+  m_Motion: {fileID: 7400000, guid: 24e14d62053a2456686c292df40e60e1, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -314,7 +314,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: ede4a3b27483c6641ad967bc2e6c73cf, type: 3}
+  m_Motion: {fileID: 7400000, guid: 3e6f42532349e46a28fcef7c640573e0, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -366,7 +366,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: ef5274f6f60dc7d439c8ac18579a6222, type: 2}
+  m_Motion: {fileID: -203655887218126122, guid: 3a86a743e2c5645c0b0c60918845ad58, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
